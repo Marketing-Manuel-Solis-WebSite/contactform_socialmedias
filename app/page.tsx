@@ -1,10 +1,9 @@
-import LinktreePageContent from '../app/[lang]/links/LinktreePageContent'
+import LinktreePageContent from './[lang]/links/LinktreePageContent'
 
-export const metadata = {
-  title: 'Manuel Solis Law Firm | Links',
-  description: 'Abogados de Inmigración - Immigration Lawyers. Empieza hoy tu proceso legal con nuestro equipo de expertos.',
-}
-
-export default function LinksPage() {
-  return <LinktreePageContent />
+export default function Home() {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between">
+      <LinktreePageContent />
+    </main>
+  )
 }

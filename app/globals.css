@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Tema base y correcciones globales 
+  Configuramos el fondo oscuro por defecto para evitar el "flash" blanco al cargar
+*/
+
+:root {
+  --background: #001540;
+  --foreground: #ffffff;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-outfit), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar personalizada para que combine con el diseño oscuro */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000510;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #B2904D;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
