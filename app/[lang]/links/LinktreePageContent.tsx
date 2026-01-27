@@ -15,13 +15,19 @@ import {
   Facebook,
   Instagram,
   Youtube,
-  Linkedin
+  Linkedin,
+  Play,
+  ChevronDown
 } from 'lucide-react'
 
 // --- CONSTANTES Y CONFIGURACIÓN ---
 const API_URL = '/api/zapier-contact'
+const YOUTUBE_VIDEO_ID = 'PmU1yOfB9C8'
+const YOUTUBE_LINK = `https://youtu.be/${YOUTUBE_VIDEO_ID}?si=6-TDHSbxtZYkaFMc`
+// Usamos hqdefault para asegurar que la imagen exista y no se vea gris
+const YOUTUBE_THUMBNAIL = `https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/hqdefault.jpg`
 
-// --- TRACKING (Restaurado) ---
+// --- TRACKING ---
 const trackConversionEvents = () => {
   if (typeof window !== 'undefined') {
     try {
@@ -44,12 +50,6 @@ const TikTokIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
-const WhatsAppIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-)
-
 // --- TEXTOS ---
 const texts = {
   title: {
@@ -69,9 +69,9 @@ const texts = {
       es: 'LLÁMANOS AHORA',
       en: 'CALL US NOW'
     },
-    whatsapp: {
-      es: 'ESCRÍBENOS POR WHATSAPP',
-      en: 'MESSAGE US ON WHATSAPP'
+    video: {
+      es: 'MIRA NUESTRO VIDEO RECIENTE',
+      en: 'WATCH OUR RECENT VIDEO'
     }
   },
   footer: {
@@ -263,6 +263,98 @@ const LinkButton = ({ icon, text, href, onClick, highlight = false, gradient }: 
   )
 }
 
+// --- NUEVO COMPONENTE: VIDEO ACCORDION ---
+const VideoAccordion = ({ text }: { text: string }) => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <div className="w-full">
+            {/* Botón que despliega */}
+            <motion.button 
+                onClick={() => setIsOpen(!isOpen)}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className={`
+                    relative w-full flex items-center justify-between p-1 rounded-full
+                    transition-all duration-300 group overflow-hidden mb-2
+                    bg-white/5 border border-white/10 hover:border-[#B2904D]/50 hover:shadow-[0_4px_20px_-5px_rgba(178,144,77,0.3)] backdrop-blur-md
+                    ${isOpen ? 'border-[#B2904D]/50 bg-[#B2904D]/10' : ''}
+                `}
+            >
+                {/* Icono Youtube */}
+                <div className={`
+                    flex items-center justify-center w-12 h-12 rounded-full shrink-0 m-1
+                    bg-white/10 text-white group-hover:bg-white group-hover:text-[#001540] transition-colors duration-300
+                    ${isOpen ? 'bg-white text-[#001540]' : ''}
+                `}>
+                    <Youtube size={22} />
+                </div>
+
+                {/* Texto */}
+                <span className={`
+                    flex-1 text-center font-bold text-base px-2 uppercase tracking-wide
+                    text-white group-hover:text-[#001540] transition-colors duration-300
+                    ${isOpen ? 'text-[#B2904D]' : ''}
+                `}>
+                    {text}
+                </span>
+
+                {/* Flecha animada */}
+                <div className="w-12 flex items-center justify-center shrink-0">
+                    <ChevronDown className={`
+                        w-5 h-5 transition-transform duration-300 
+                        ${isOpen ? 'rotate-180 text-[#B2904D]' : 'text-white/30 group-hover:text-[#001540]/50'}
+                    `} />
+                </div>
+            </motion.button>
+
+            {/* Contenedor del Video (Acordeón) */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                        animate={{ height: "auto", opacity: 1, marginTop: 10 }}
+                        exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                    >
+                         <motion.a 
+                            href={YOUTUBE_LINK}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative block w-full aspect-video rounded-2xl overflow-hidden border border-white/10 group shadow-lg hover:shadow-[#B2904D]/20 transition-all duration-300"
+                        >
+                            {/* Background Thumbnail */}
+                            <div 
+                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                                style={{ backgroundImage: `url(${YOUTUBE_THUMBNAIL})` }}
+                            />
+                            
+                            {/* Overlay Oscuro */}
+                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
+                            
+                            {/* Play Button */}
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                                <motion.div 
+                                    initial={{ scale: 0.8 }}
+                                    animate={{ scale: 1 }}
+                                    className="w-14 h-14 rounded-full bg-[#B2904D]/90 flex items-center justify-center shadow-lg backdrop-blur-sm group-hover:scale-110 transition-transform duration-300"
+                                >
+                                    <Play className="w-6 h-6 text-[#001026] ml-1" fill="currentColor" />
+                                </motion.div>
+                            </div>
+
+                            {/* Borde Brillante al Hover */}
+                            <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#B2904D]/50 rounded-2xl transition-colors duration-300 pointer-events-none" />
+                        </motion.a>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    )
+}
+
+
 // --- COMPONENTE PRINCIPAL ---
 export default function LinktreePageContent() {
   const { language, setLanguage } = useLanguage()
@@ -275,6 +367,23 @@ export default function LinktreePageContent() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  
+  const [utmParams, setUtmParams] = useState({
+    source: '',
+    medium: '',
+    campaign: ''
+  })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setUtmParams({
+        source: params.get('utm_source') || '',
+        medium: params.get('utm_medium') || '',
+        campaign: params.get('utm_campaign') || ''
+      })
+    }
+  }, [])
 
   const t = (key: string) => {
     const keys = key.split('.')
@@ -283,7 +392,6 @@ export default function LinktreePageContent() {
     return value?.[lang] || key
   }
 
-  // --- HANDLER SUBMIT REAL RESTAURADO ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.acceptedTerms || isSubmitting) return
@@ -292,17 +400,15 @@ export default function LinktreePageContent() {
     setSubmitStatus('idle')
 
     try {
-      // 1. Preparar Payload
       const payload = {
         ...formData, 
-        utm_source: 'LINKTREE',
-        utm_medium: 'Social',
-        utm_campaign: 'Linktree',
+        utm_source: utmParams.source || 'LINKTREE', 
+        utm_medium: utmParams.medium || 'Social',
+        utm_campaign: utmParams.campaign || 'Linktree',
         uri: typeof window !== 'undefined' ? window.location.href : '',
         language: lang
       }
 
-      // 2. Enviar a la API Configurada
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -310,22 +416,18 @@ export default function LinktreePageContent() {
       })
 
       if (response.ok) {
-        // 3. Tracking de Conversión
         trackConversionEvents()
-        
         setSubmitStatus('success')
         setFormData({ 
           first_name: '', last_name: '', phone: '', email: '', enquiry_detail: '', 
           acceptedTerms: false, marketingConsent: false 
         })
-        
         setTimeout(() => {
           setIsContactModalOpen(false)
           setSubmitStatus('idle')
         }, 2500)
       } else {
         setSubmitStatus('error')
-        // Log para depuración si es necesario
         console.error("API Error:", response.status)
       }
     } catch (error) {
@@ -395,21 +497,24 @@ export default function LinktreePageContent() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
-          className="relative mb-8 text-center"
+          // SEPARACION: Aumentado mb-6 a mb-12 para separar del cuerpo
+          className="relative mb-12 text-center"
         >
-          {/* Logo Container */}
-          <div className="relative w-32 h-32 mx-auto mb-6">
-            <div className="absolute inset-0 bg-[#B2904D] rounded-full blur-xl opacity-20 animate-pulse"></div>
-            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white/10 to-white/5 p-1 border border-[#B2904D]/30 backdrop-blur-sm overflow-hidden shadow-2xl">
-              <div className="w-full h-full rounded-full bg-[#001540] flex items-center justify-center p-2 relative overflow-hidden">
+          {/* Logo Container - AUMENTADO DE TAMAÑO */}
+          <div className="relative w-56 h-56 mx-auto mb-6"> 
+            <div className="absolute inset-0 bg-[#B2904D] rounded-full blur-2xl opacity-20 animate-pulse"></div>
+            {/* ARO MÁS PEQUEÑO: Reducido border-2 a border y p-1 a p-0.5 */}
+            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white/10 to-white/5 p-[2px] border border-[#B2904D]/20 backdrop-blur-sm overflow-hidden shadow-2xl">
+              <div className="w-full h-full rounded-full bg-[#001540] flex items-center justify-center relative overflow-hidden">
                 <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_12fdfc-Sg1yYJg8XjC6pX1yX6XjC6pX1y.jpg"
+                  src="/LogoInformacion.png" 
                   alt="Manuel Solis"
+                  // LOGO MÁS GRANDE: Aseguramos que llene todo
                   className="w-full h-full object-cover rounded-full"
                 />
-                 {/* Fallback visual si la imagen falla */}
+                 {/* Fallback visual */}
                  <div className="absolute inset-0 flex items-center justify-center bg-[#001540] -z-10">
-                    <span className="text-[#B2904D] font-bold text-3xl">MS</span>
+                    <span className="text-[#B2904D] font-bold text-5xl">MS</span>
                  </div>
               </div>
             </div>
@@ -423,14 +528,14 @@ export default function LinktreePageContent() {
           </p>
         </motion.div>
 
-        {/* Lista de Botones (Solo 3 Grandes) */}
+        {/* Lista de Botones */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           className="w-full space-y-5"
         >
-          {/* 1. Botón Contacto (Formulario) - Destacado Dorado */}
+          {/* 1. Botón Contacto (Formulario) */}
           <motion.div variants={itemVariants}>
             <LinkButton
               icon={<MessageSquare size={22} />}
@@ -440,7 +545,7 @@ export default function LinktreePageContent() {
             />
           </motion.div>
 
-          {/* 2. Botón Llamar - Estilo Vidrio */}
+          {/* 2. Botón Llamar */}
           <motion.div variants={itemVariants}>
             <LinkButton
               icon={<Phone size={22} />}
@@ -449,13 +554,9 @@ export default function LinktreePageContent() {
             />
           </motion.div>
 
-          {/* 3. Botón WhatsApp - Estilo Vidrio */}
+          {/* 3. BOTÓN VIDEO DESPLEGABLE */}
           <motion.div variants={itemVariants}>
-            <LinkButton
-              icon={<WhatsAppIcon className="w-5 h-5" />}
-              text={texts.buttons.whatsapp[lang]}
-              href={socialLinks.whatsapp}
-            />
+             <VideoAccordion text={texts.buttons.video[lang]} />
           </motion.div>
 
         </motion.div>
@@ -468,7 +569,7 @@ export default function LinktreePageContent() {
             className="w-full max-w-[200px] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mt-10 mb-6"
         />
 
-        {/* Footer Iconos Redes Sociales (Pequeños) */}
+        {/* Footer Iconos Redes Sociales */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
