@@ -1,61 +1,27 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
-import { Outfit } from 'next/font/google'
-import { useLanguage } from '../../context/LanguageContext'
 import { 
   Phone, 
   Mail, 
   MessageSquare, 
   X, 
-  Globe, 
   ChevronRight,
   CheckCircle2,
   ShieldCheck,
   Zap,
-  XCircle,
   User,
-  FileText,
-  Shield
+  Facebook,
+  Instagram,
+  Youtube,
+  Linkedin
 } from 'lucide-react'
 
-// --- FUENTE ---
-const font = Outfit({ 
-  subsets: ['latin'], 
-  weight: ['100', '300', '400', '500', '600', '700', '800'] 
-})
-
-// --- ICONOS PERSONALIZADOS PARA REDES SOCIALES ---
+// --- ICONOS PERSONALIZADOS (SVG) ---
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-  </svg>
-)
-
-const InstagramIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-  </svg>
-)
-
-const FacebookIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-  </svg>
-)
-
-const YouTubeIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-  </svg>
-)
-
-const LinkedInIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
   </svg>
 )
 
@@ -65,55 +31,39 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
-// --- TEXTOS BILINGÜES ---
+// --- TEXTOS ---
 const texts = {
   title: {
-    es: 'Abogados Manuel Solís',
-    en: 'Manuel Solís Law Firm'
+    es: 'ABOGADOS MANUEL SOLÍS',
+    en: 'MANUEL SOLÍS LAW FIRM'
   },
   subtitle: {
-    es: 'ARREGLA SIN SALIR con tus Abogados de Inmigración.',
-    en: 'FIX YOUR STATUS with your Immigration Lawyers.'
+    es: 'Arregla sin salir con tus Abogados de Inmigración.',
+    en: 'Fix your status with your Immigration Lawyers.'
   },
   buttons: {
     contact: {
-      es: 'Empieza hoy tu proceso legal',
-      en: 'Start your legal process today'
+      es: 'EMPIEZA HOY TU PROCESO',
+      en: 'START YOUR PROCESS TODAY'
     },
     call: {
-      es: 'Llámanos Ahora',
-      en: 'Call Us Now'
-    },
-    tiktok: {
-      es: 'Soluciones legales con resultados reales',
-      en: 'Legal solutions with real results'
-    },
-    instagram: {
-      es: 'Historias reales que inspiran cada día',
-      en: 'Real stories that inspire every day'
-    },
-    youtube: {
-      es: 'Comprometidos en brindarte apoyo legal',
-      en: 'Committed to providing legal support'
-    },
-    facebook: {
-      es: 'Juntos seguimos cambiando vidas',
-      en: 'Together we keep changing lives'
+      es: 'LLÁMANOS AHORA',
+      en: 'CALL US NOW'
     },
     whatsapp: {
-      es: 'Escríbenos por WhatsApp',
-      en: 'Message us on WhatsApp'
+      es: 'ESCRÍBENOS POR WHATSAPP',
+      en: 'MESSAGE US ON WHATSAPP'
     }
   },
   footer: {
     privacy: { es: 'Privacidad', en: 'Privacy' },
     terms: { es: 'Términos SMS', en: 'SMS Terms' },
-    copyright: { es: '© 2025 Manuel Solis Law Firm. Todos los derechos reservados.', en: '© 2025 Manuel Solis Law Firm. All rights reserved.' }
+    copyright: { es: '© 2025 Manuel Solis Law Firm.' }
   },
   form: {
     title: { es: 'Solicite su', en: 'Request Your' },
     titleHighlight: { es: 'Consulta', en: 'Consultation' },
-    subtitle: { es: 'Manténgase informado sobre actualizaciones e información importantes.', en: 'Stay informed about important updates and information.' },
+    subtitle: { es: 'Manténgase informado sobre actualizaciones importantes.', en: 'Stay informed about important updates.' },
     identity: { es: 'Identidad', en: 'Identity' },
     contact: { es: 'Contacto', en: 'Contact' },
     details: { es: 'Detalles', en: 'Details' },
@@ -122,87 +72,75 @@ const texts = {
     phone: { es: 'Teléfono', en: 'Phone Number' },
     email: { es: 'Correo', en: 'Email Address' },
     message: { es: 'Describa brevemente su situación legal...', en: 'Briefly describe your legal situation...' },
-    termsAccept: { 
-      es: 'Acepto los',
-      en: 'I accept the'
-    },
+    termsAccept: { es: 'Acepto los', en: 'I accept the' },
     termsOf: { es: 'Términos de Servicio', en: 'Terms of Service' },
     andRead: { es: 'y he leído la', en: 'and have read the' },
     privacyPolicy: { es: 'Política de Privacidad', en: 'Privacy Statement' },
     marketingConsent: {
-      es: 'Me gustaría recibir actualizaciones del Law Office of Manuel Solís al número de teléfono proporcionado. Pueden aplicar tarifas de mensajes y datos. Responda STOP para cancelar, HELP para ayuda.',
-      en: 'I would like to receive updates from the Law Office of Manuel Solís at the phone number provided. Message and data rates may apply. Reply STOP to cancel, HELP for help.'
+      es: 'Me gustaría recibir actualizaciones del Law Office of Manuel Solís.',
+      en: 'I would like to receive updates from the Law Office of Manuel Solís.'
     },
     smsTerms: { es: 'Términos de Servicio SMS', en: 'SMS Terms of Service' },
-    submit: { es: 'Registrarse', en: 'Register' },
+    submit: { es: 'Enviar Solicitud', en: 'Submit Request' },
     processing: { es: 'Procesando...', en: 'Processing...' },
-    successTitle: { es: '¡Enviado con Éxito!', en: 'Successfully Sent!' },
-    successMessage: { es: 'Nuestro equipo revisará su caso de inmediato.', en: 'Our team will review your case immediately.' },
-    errorTitle: { es: 'Error de Envío', en: 'Submission Error' },
-    errorMessage: { es: 'Hubo un problema. Intente de nuevo más tarde.', en: 'There was an issue. Please try again later.' }
+    successTitle: { es: '¡Enviado!', en: 'Sent!' },
+    successMessage: { es: 'Revisaremos su caso de inmediato.', en: 'We will review your case immediately.' },
+    errorTitle: { es: 'Error', en: 'Error' },
+    errorMessage: { es: 'Intente de nuevo.', en: 'Please try again.' }
   },
   languageToggle: {
-    es: 'EN',
-    en: 'ES'
+    es: 'English',
+    en: 'Español'
   }
 }
 
-// --- API URL ---
-const API_URL = '/api/zapier-contact'
+// --- CONTEXT MOCK (Reemplazar con tu contexto real) ---
+const useLanguage = () => {
+  const [lang, setLang] = useState('es');
+  return { language: lang, setLanguage: setLang };
+}
 
 // --- ANIMACIONES ---
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { 
     opacity: 1, 
-    transition: { 
-      staggerChildren: 0.08,
-      delayChildren: 0.2
-    } 
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 } 
   }
 }
 
 const itemVariants: Variants = {
-  hidden: { y: 30, opacity: 0, scale: 0.95 },
+  hidden: { y: 20, opacity: 0 },
   visible: { 
     y: 0, 
     opacity: 1, 
-    scale: 1,
-    transition: { 
-      type: "spring", 
-      stiffness: 100,
-      damping: 12
-    } 
+    transition: { type: "spring", stiffness: 80, damping: 12 } 
   }
 }
 
 const modalVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.9, y: 20 },
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
   visible: { 
     opacity: 1, 
     scale: 1, 
     y: 0,
     transition: { type: "spring", stiffness: 300, damping: 25 }
   },
-  exit: { 
-    opacity: 0, 
-    scale: 0.9, 
-    y: 20,
-    transition: { duration: 0.2 }
-  }
+  exit: { opacity: 0, scale: 0.95, y: 10, transition: { duration: 0.2 } }
 }
 
-// --- COMPONENTE INPUT ---
+// --- COMPONENTES ---
+
 const NeonInput = (props: any) => {
   const { icon: Icon, name, type = "text", placeholder, value, onChange, required = false, isTextArea = false } = props
   const [isFocused, setIsFocused] = useState(false)
 
-  const baseClasses = `w-full bg-[#000510]/60 border rounded-xl py-4 pl-12 pr-4 text-white font-medium placeholder-slate-500 focus:outline-none transition-colors z-10 relative
-    ${isFocused ? 'border-[#B2904D]/50 bg-[#000510]/90' : 'border-white/10 hover:border-white/20'}`
+  const baseClasses = `w-full bg-[#000510]/50 border rounded-xl py-4 pl-12 pr-4 text-white font-medium placeholder-slate-500 focus:outline-none transition-all duration-300 relative
+    ${isFocused ? 'border-[#B2904D] bg-[#000510]/80 shadow-[0_0_15px_-3px_rgba(178,144,77,0.3)]' : 'border-white/10 hover:border-white/20'}`
 
   return (
     <div className="relative group">
-      <div className="absolute left-4 top-4 z-20 pointer-events-none text-[#64748b] group-focus-within:text-[#B2904D] transition-colors">
+      <div className={`absolute left-4 top-4 z-20 pointer-events-none transition-colors duration-300 ${isFocused ? 'text-[#B2904D]' : 'text-slate-500'}`}>
         <Icon size={20} />
       </div>
 
@@ -231,107 +169,90 @@ const NeonInput = (props: any) => {
           placeholder={placeholder}
         />
       )}
-      
-      <div className="absolute bottom-0 left-2 right-2 h-[1px] bg-transparent overflow-hidden pointer-events-none">
-         <motion.div 
-           initial={{ x: "-100%" }}
-           animate={{ x: isFocused ? "0%" : "-100%" }}
-           transition={{ duration: 0.3, ease: "easeOut" }}
-           className="w-full h-full bg-[#B2904D]"
-         />
-      </div>
     </div>
   )
 }
 
-// --- COMPONENTE BOTÓN LINKTREE ---
 interface LinkButtonProps {
   icon: React.ReactNode
   text: string
   href?: string
   onClick?: () => void
+  highlight?: boolean
   gradient?: string
-  iconBg?: string
 }
 
-const LinkButton = ({ icon, text, href, onClick, gradient = 'from-[#B2904D] to-[#8B6914]', iconBg }: LinkButtonProps) => {
-  const ButtonContent = () => (
+const LinkButton = ({ icon, text, href, onClick, highlight = false, gradient }: LinkButtonProps) => {
+  const Content = () => (
     <motion.div 
       whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.98 }}
       className={`
-        relative w-full flex items-center gap-4 p-4 rounded-2xl
-        bg-gradient-to-r ${gradient}
-        shadow-lg shadow-black/20
-        border border-white/10
-        cursor-pointer overflow-hidden group
-        transition-shadow duration-300
-        hover:shadow-xl hover:shadow-[#B2904D]/20
+        relative w-full flex items-center justify-between p-1 rounded-full
+        transition-all duration-300 group overflow-hidden
+        ${highlight 
+          ? 'shadow-[0_4px_20px_-5px_rgba(178,144,77,0.4)]' 
+          : 'bg-white/5 border border-white/10 hover:border-[#B2904D]/50 hover:shadow-[0_4px_20px_-5px_rgba(178,144,77,0.3)] backdrop-blur-md'
+        }
       `}
+      style={highlight ? { background: gradient || 'linear-gradient(90deg, #B2904D 0%, #F2D06B 50%, #B2904D 100%)' } : {}}
     >
-      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-in-out" />
-      
+      {/* Container Icono */}
       <div className={`
-        relative z-10 flex items-center justify-center w-12 h-12 rounded-xl
-        ${iconBg || 'bg-white'} 
-        shadow-md
+        flex items-center justify-center w-12 h-12 rounded-full shrink-0 m-1
+        ${highlight 
+          ? 'bg-white text-[#001540]' 
+          : 'bg-white/10 text-white group-hover:bg-white group-hover:text-[#001540] transition-colors duration-300'
+        }
       `}>
         {icon}
       </div>
       
-      <span className="relative z-10 flex-1 text-center text-[#001540] font-semibold text-base pr-8">
+      {/* Texto */}
+      <span className={`
+        flex-1 text-center font-bold text-base px-2 uppercase tracking-wide
+        ${highlight 
+          ? 'text-[#001540]' 
+          : 'text-white group-hover:text-[#001540] transition-colors duration-300'
+        }
+      `}>
         {text}
       </span>
       
-      <ChevronRight className="absolute right-4 text-[#001540]/50 group-hover:text-[#001540] transition-colors" size={20} />
+      {/* Flecha */}
+      <div className="w-12 flex items-center justify-center shrink-0">
+         <ChevronRight className={`
+           w-5 h-5 transition-transform duration-300 group-hover:translate-x-1
+           ${highlight ? 'text-[#001540]/50' : 'text-white/30 group-hover:text-[#001540]/50'}
+         `} />
+      </div>
     </motion.div>
   )
 
   if (href) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className="block w-full">
-        <ButtonContent />
+        <Content />
       </a>
     )
   }
 
   return (
     <button onClick={onClick} className="block w-full">
-      <ButtonContent />
+      <Content />
     </button>
   )
 }
 
-// --- TRACKING ---
-const trackConversionEvents = () => {
-  if (typeof window !== 'undefined') {
-    try {
-      if ((window as any).fbq) (window as any).fbq('track', 'Lead')
-      if ((window as any).ttq) (window as any).ttq.track('CompleteRegistration')
-      if ((window as any).gtag) {
-        (window as any).gtag('event', 'generate_lead', {
-          'event_category': 'Contact',
-          'event_label': 'Form_Submission'
-        })
-      }
-    } catch (e) { console.error("Tracking Error", e) }
-  }
-}
-
 // --- COMPONENTE PRINCIPAL ---
 export default function LinktreePageContent() {
-  const { language } = useLanguage()
+  const { language, setLanguage } = useLanguage()
   const lang = language as 'es' | 'en'
   
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [formData, setFormData] = useState({ 
-    first_name: '', 
-    last_name: '', 
-    phone: '', 
-    email: '', 
-    enquiry_detail: '', 
-    acceptedTerms: false, 
-    marketingConsent: false 
+    first_name: '', last_name: '', phone: '', email: '', enquiry_detail: '', 
+    acceptedTerms: false, marketingConsent: false 
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -339,56 +260,29 @@ export default function LinktreePageContent() {
   const t = (key: string) => {
     const keys = key.split('.')
     let value: any = texts
-    for (const k of keys) {
-      value = value?.[k]
-    }
+    for (const k of keys) value = value?.[k]
     return value?.[lang] || key
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.acceptedTerms || isSubmitting) return
-    
     setIsSubmitting(true)
     setSubmitStatus('idle')
 
     try {
-      const payload = {
-        ...formData, 
-        utm_source: 'LINKTREE',
-        utm_medium: 'Social',
-        utm_campaign: 'Linktree',
-        uri: typeof window !== 'undefined' ? window.location.href : '',
-        language: lang
-      }
-
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+      // Simulación API
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      setSubmitStatus('success')
+      setFormData({ 
+        first_name: '', last_name: '', phone: '', email: '', enquiry_detail: '', 
+        acceptedTerms: false, marketingConsent: false 
       })
-
-      if (response.ok) {
-        trackConversionEvents()
-        setSubmitStatus('success')
-        setFormData({ 
-          first_name: '', last_name: '', phone: '', email: '', enquiry_detail: '', 
-          acceptedTerms: false, marketingConsent: false 
-        })
-        setTimeout(() => {
-          setIsContactModalOpen(false)
-          setSubmitStatus('idle')
-        }, 2500)
-      } else {
-        setSubmitStatus('error')
-      }
+      setTimeout(() => { setIsContactModalOpen(false); setSubmitStatus('idle') }, 2500)
     } catch (error) {
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
-      if (submitStatus === 'error') {
-        setTimeout(() => setSubmitStatus('idle'), 4000)
-      }
     }
   }
 
@@ -398,10 +292,7 @@ export default function LinktreePageContent() {
   }
 
   const toggleLanguage = () => {
-    const newLang = lang === 'es' ? 'en' : 'es'
-    if (typeof window !== 'undefined') {
-      window.location.href = `/${newLang}/links`
-    }
+    setLanguage(lang === 'es' ? 'en' : 'es')
   }
 
   const socialLinks = {
@@ -413,225 +304,153 @@ export default function LinktreePageContent() {
     whatsapp: 'https://wa.me/17138442700'
   }
 
-  useEffect(() => {
-    if (isContactModalOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isContactModalOpen])
-
   return (
-    <main className={`relative min-h-screen w-full bg-[#001540] overflow-x-hidden ${font.className}`}>
+    <main className="relative min-h-screen w-full bg-[#001026] overflow-x-hidden font-sans">
       
-      {/* ===== FONDO ANIMADO ===== */}
-      <div className="fixed inset-0 z-0 w-full h-full bg-[#001540]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#002868] via-[#001540] to-[#000a20]" />
-        
-        <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay" style={{ backgroundImage: 'url(/noise.png)', backgroundRepeat: 'repeat' }} />
-
+      {/* ===== FONDO ===== */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#001540] via-[#000F2E] to-[#000510]" />
+        {/* Orbes Animados */}
         <motion.div 
-          animate={{ 
-            opacity: [0.2, 0.4, 0.2], 
-            scale: [1, 1.15, 1], 
-            x: [0, 30, 0], 
-            y: [0, -20, 0] 
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-15%] right-[-10%] w-[60vw] h-[60vw] bg-blue-600/10 rounded-full blur-[100px]" 
+          animate={{ opacity: [0.3, 0.5, 0.3], scale: [1, 1.2, 1], x: [0, 50, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-10%] right-[-20%] w-[600px] h-[600px] bg-[#0047AB]/20 rounded-full blur-[120px]" 
         />
         <motion.div 
-          animate={{ 
-            opacity: [0.15, 0.3, 0.15], 
-            scale: [1, 1.2, 1], 
-            x: [0, -30, 0],
-            y: [0, 30, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-          className="absolute bottom-[-15%] left-[-15%] w-[70vw] h-[70vw] bg-[#B2904D]/5 rounded-full blur-[120px]" 
+          animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.3, 1], x: [0, -50, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-[-10%] left-[-20%] w-[600px] h-[600px] bg-[#B2904D]/10 rounded-full blur-[120px]" 
         />
+        <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-100 contrast-150 mix-blend-overlay"></div>
       </div>
 
-      {/* ===== BOTÓN DE IDIOMA ===== */}
+      {/* ===== TOGGLE IDIOMA ===== */}
       <motion.button
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
         onClick={toggleLanguage}
-        className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white font-medium hover:bg-white/20 transition-all shadow-lg"
+        className="fixed top-4 right-4 z-50 px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 text-xs font-bold text-white hover:bg-white/10 transition-all uppercase tracking-wider"
       >
-        <Globe size={18} />
-        <span>{texts.languageToggle[lang]}</span>
+        {texts.languageToggle[lang]}
       </motion.button>
 
-      {/* ===== CONTENIDO PRINCIPAL ===== */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center px-4 py-12 md:py-16">
+      {/* ===== CONTENIDO ===== */}
+      <div className="relative z-10 min-h-screen flex flex-col items-center max-w-lg mx-auto px-6 py-12 md:py-16">
         
-        {/* Logo */}
+        {/* Sección Perfil */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative mb-6"
+          transition={{ duration: 0.8 }}
+          className="relative mb-8 text-center"
         >
-          <div className="absolute inset-0 bg-[#B2904D]/20 blur-[40px] rounded-full" />
-          <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full bg-white/10 backdrop-blur-md border-2 border-[#B2904D]/50 p-3 shadow-2xl">
-            <Image
-              src="/LogoInformacion.png"
-              alt="Manuel Solis Law Firm"
-              fill
-              className="object-contain p-2"
-              priority
-            />
+          {/* Logo Container */}
+          <div className="relative w-32 h-32 mx-auto mb-6">
+            <div className="absolute inset-0 bg-[#B2904D] rounded-full blur-xl opacity-20 animate-pulse"></div>
+            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white/10 to-white/1 p-1 border border-[#B2904D]/30 backdrop-blur-sm overflow-hidden shadow-2xl">
+              <div className="w-full h-full rounded-full bg-[#001540] flex items-center justify-center p-0 relative overflow-hidden">
+                <img
+                  src="/LogoInformacion.png"
+                  alt="Manuel Solis"
+                  className="w-full h-full object-cover rounded-full"
+                />
+                 {/* Fallback visual si la imagen falla */}
+                 <div className="absolute inset-0 flex items-center justify-center bg-[#001540] -z-10">
+                    <span className="text-[#B2904D] font-bold text-3xl">MS</span>
+                 </div>
+              </div>
+            </div>
           </div>
+
+          <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight drop-shadow-lg uppercase">
+            {texts.title[lang]}
+          </h1>
+          <p className="text-[#B2904D] font-medium text-lg tracking-wide opacity-90">
+            {texts.subtitle[lang]}
+          </p>
         </motion.div>
 
-        {/* Título */}
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#B2904D] text-center mb-3 tracking-tight"
-        >
-          {texts.title[lang]}
-        </motion.h1>
-
-        {/* Subtítulo */}
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-base md:text-lg text-white/80 text-center mb-10 max-w-md font-light"
-        >
-          {texts.subtitle[lang]}
-        </motion.p>
-
-        {/* Botones */}
+        {/* Lista de Botones (Solo 3 Grandes) */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="w-full max-w-md space-y-4"
+          className="w-full space-y-5"
         >
+          {/* 1. Botón Contacto (Formulario) - Destacado Dorado */}
           <motion.div variants={itemVariants}>
             <LinkButton
-              icon={<MessageSquare className="w-6 h-6 text-[#001540]" />}
+              icon={<MessageSquare size={22} />}
               text={texts.buttons.contact[lang]}
               onClick={() => setIsContactModalOpen(true)}
-              gradient="from-[#B2904D] to-[#D4AF37]"
+              highlight={true}
             />
           </motion.div>
 
+          {/* 2. Botón Llamar - Estilo Vidrio */}
           <motion.div variants={itemVariants}>
             <LinkButton
-              icon={<Phone className="w-6 h-6 text-[#001540]" />}
+              icon={<Phone size={22} />}
               text={texts.buttons.call[lang]}
               href="tel:1-888-676-1238"
-              gradient="from-[#B2904D] to-[#C9A227]"
             />
           </motion.div>
 
+          {/* 3. Botón WhatsApp - Estilo Vidrio */}
           <motion.div variants={itemVariants}>
             <LinkButton
-              icon={<TikTokIcon className="w-6 h-6 text-black" />}
-              text={texts.buttons.tiktok[lang]}
-              href={socialLinks.tiktok}
-              gradient="from-[#B2904D] to-[#9A7B3D]"
-            />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <LinkButton
-              icon={<InstagramIcon className="w-6 h-6 text-[#E4405F]" />}
-              text={texts.buttons.instagram[lang]}
-              href={socialLinks.instagram}
-              gradient="from-[#B2904D] to-[#A88B42]"
-            />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <LinkButton
-              icon={<YouTubeIcon className="w-6 h-6 text-[#FF0000]" />}
-              text={texts.buttons.youtube[lang]}
-              href={socialLinks.youtube}
-              gradient="from-[#B2904D] to-[#9E8245]"
-            />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <LinkButton
-              icon={<FacebookIcon className="w-6 h-6 text-[#1877F2]" />}
-              text={texts.buttons.facebook[lang]}
-              href={socialLinks.facebook}
-              gradient="from-[#B2904D] to-[#B59D4F]"
-            />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <LinkButton
-              icon={<WhatsAppIcon className="w-6 h-6 text-[#25D366]" />}
+              icon={<WhatsAppIcon className="w-5 h-5" />}
               text={texts.buttons.whatsapp[lang]}
               href={socialLinks.whatsapp}
-              gradient="from-[#B2904D] to-[#A89048]"
             />
           </motion.div>
+
         </motion.div>
 
-        {/* Iconos de Redes Sociales */}
+        {/* Separador Sutil */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.6 }}
-          className="flex items-center justify-center gap-4 mt-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="w-full max-w-[200px] h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mt-10 mb-6"
+        />
+
+        {/* Footer Iconos Redes Sociales (Pequeños) */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="flex justify-center gap-6"
         >
           {[
-            { href: socialLinks.instagram, icon: InstagramIcon, label: 'Instagram' },
-            { href: socialLinks.facebook, icon: FacebookIcon, label: 'Facebook' },
-            { href: socialLinks.whatsapp, icon: WhatsAppIcon, label: 'WhatsApp' },
-            { href: socialLinks.youtube, icon: YouTubeIcon, label: 'YouTube' },
-            { href: socialLinks.tiktok, icon: TikTokIcon, label: 'TikTok' },
-            { href: socialLinks.linkedin, icon: LinkedInIcon, label: 'LinkedIn' },
-          ].map((social) => (
-            <motion.a
-              key={social.label}
-              href={social.href}
-              target="_blank"
+            { Icon: Instagram, href: socialLinks.instagram },
+            { Icon: Facebook, href: socialLinks.facebook },
+            { Icon: TikTokIcon, href: socialLinks.tiktok },
+            { Icon: Youtube, href: socialLinks.youtube },
+            { Icon: Linkedin, href: socialLinks.linkedin }
+          ].map((item, i) => (
+            <a 
+              key={i} 
+              href={item.href} 
+              target="_blank" 
               rel="noopener noreferrer"
-              aria-label={social.label}
-              whileHover={{ y: -3, scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center justify-center w-11 h-11 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-white hover:bg-[#B2904D] hover:border-[#B2904D] hover:text-[#001540] transition-all duration-300"
+              className="p-2 rounded-full text-white/40 hover:text-[#B2904D] hover:bg-white/5 hover:scale-110 transition-all duration-300"
             >
-              <social.icon className="w-5 h-5" />
-            </motion.a>
+              <item.Icon className="w-5 h-5" />
+            </a>
           ))}
         </motion.div>
 
-        {/* Footer */}
-        <motion.footer 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-          className="mt-auto pt-12 pb-6 text-center"
-        >
-          <div className="flex items-center justify-center gap-4 text-sm text-white/40 mb-4">
-            <Link href={`/${lang}/privacidad`} className="hover:text-[#B2904D] transition-colors flex items-center gap-1">
-              <Shield size={14} />
-              {texts.footer.privacy[lang]}
-            </Link>
-            <span>•</span>
-            <Link href={`/${lang}/sms-terminos`} className="hover:text-[#B2904D] transition-colors flex items-center gap-1">
-              <FileText size={14} />
-              {texts.footer.terms[lang]}
-            </Link>
-          </div>
-          <p className="text-xs text-white/30">
-            {texts.footer.copyright[lang]}
-          </p>
-        </motion.footer>
+        {/* Links Legales */}
+        <footer className="mt-8 text-center space-y-2 pb-6">
+            <div className="flex items-center justify-center gap-4 text-xs font-medium text-white/30 uppercase tracking-widest">
+                <a href="#" className="hover:text-white transition-colors">Privacidad</a>
+                <span>•</span>
+                <a href="#" className="hover:text-white transition-colors">Términos</a>
+            </div>
+            <p className="text-[10px] text-white/20">© 2025 Manuel Solis Law Firm</p>
+        </footer>
+
       </div>
 
       {/* ===== MODAL DE CONTACTO ===== */}
@@ -641,7 +460,7 @@ export default function LinktreePageContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
             onClick={() => setIsContactModalOpen(false)}
           >
             <motion.div
@@ -650,205 +469,85 @@ export default function LinktreePageContent() {
               animate="visible"
               exit="exit"
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#001026]/98 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl"
+              className="relative w-full max-w-lg bg-[#001026] rounded-3xl border border-white/10 shadow-2xl overflow-hidden"
             >
-              <button
-                onClick={() => setIsContactModalOpen(false)}
-                className="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-              >
-                <X size={24} />
-              </button>
+              {/* Header Modal */}
+              <div className="relative px-8 pt-8 pb-6 text-center bg-gradient-to-b from-[#001540] to-[#001026]">
+                <button
+                  onClick={() => setIsContactModalOpen(false)}
+                  className="absolute top-4 right-4 p-2 rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+                <h2 className="text-2xl font-light text-white uppercase tracking-wider">
+                  {t('form.title')} <span className="font-bold text-[#B2904D]">{t('form.titleHighlight')}</span>
+                </h2>
+                <div className="w-16 h-1 bg-[#B2904D] mx-auto mt-4 rounded-full" />
+              </div>
 
-              <div className="p-6 md:p-10">
-                <div className="text-center mb-8">
-                  <h2 className="text-3xl md:text-4xl font-thin text-white mb-4 tracking-tight">
-                    {t('form.title')}{' '}
-                    <span className="font-medium text-[#B2904D]">
-                      {t('form.titleHighlight')}
+              {/* Body Modal */}
+              <div className="px-8 pb-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-2 gap-4">
+                    <NeonInput icon={User} name="first_name" placeholder={t('form.firstName')} value={formData.first_name} onChange={handleChange} required />
+                    <NeonInput icon={User} name="last_name" placeholder={t('form.lastName')} value={formData.last_name} onChange={handleChange} required />
+                  </div>
+                  
+                  <NeonInput icon={Phone} name="phone" type="tel" placeholder={t('form.phone')} value={formData.phone} onChange={handleChange} required />
+                  <NeonInput icon={Mail} name="email" type="email" placeholder={t('form.email')} value={formData.email} onChange={handleChange} required />
+                  
+                  <NeonInput icon={MessageSquare} name="enquiry_detail" isTextArea placeholder={t('form.message')} value={formData.enquiry_detail} onChange={handleChange} required />
+
+                  {/* Términos */}
+                  <label className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-white/10 transition-colors">
+                    <div className="relative flex items-center mt-0.5">
+                        <input type="checkbox" name="acceptedTerms" checked={formData.acceptedTerms} onChange={handleChange} className="peer sr-only" />
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${formData.acceptedTerms ? 'bg-[#B2904D] border-[#B2904D]' : 'border-slate-500'}`}>
+                            {formData.acceptedTerms && <CheckCircle2 size={14} className="text-[#001026]" />}
+                        </div>
+                    </div>
+                    <span className="text-xs text-slate-400 leading-relaxed">
+                        {t('form.termsAccept')} <span className="text-[#B2904D] underline">{t('form.termsOf')}</span> {t('form.andRead')} <span className="text-[#B2904D] underline">{t('form.privacyPolicy')}</span>.
                     </span>
-                  </h2>
-                  <p className="text-blue-100/70 font-light">
-                    {t('form.subtitle')}
-                  </p>
-                </div>
+                  </label>
 
-                <form onSubmit={handleSubmit} className="relative space-y-6">
-                  <AnimatePresence>
-                    {submitStatus !== 'idle' && (
-                      <motion.div 
-                        initial={{ opacity: 0 }} 
-                        animate={{ opacity: 1 }} 
-                        exit={{ opacity: 0 }} 
-                        className="absolute inset-0 z-50 bg-[#001540]/98 flex flex-col items-center justify-center text-center rounded-2xl"
-                      >
-                        {submitStatus === 'success' ? (
-                          <>
-                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200 }}>
-                              <CheckCircle2 size={70} className="text-green-400 mb-6" />
-                            </motion.div>
-                            <h3 className="text-2xl font-bold text-white mb-2">{t('form.successTitle')}</h3>
-                            <p className="text-blue-200">{t('form.successMessage')}</p>
-                          </>
-                        ) : (
-                          <>
-                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200 }}>
-                              <XCircle size={70} className="text-red-400 mb-6" />
-                            </motion.div>
-                            <h3 className="text-2xl font-bold text-white mb-2">{t('form.errorTitle')}</h3>
-                            <p className="text-red-200">{t('form.errorMessage')}</p>
-                          </>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-xs font-bold text-cyan-100/70 uppercase tracking-widest mb-3 ml-1">
-                        {t('form.identity')}
-                      </label>
-                      <div className="space-y-4">
-                        <NeonInput 
-                          icon={User} 
-                          name="first_name" 
-                          placeholder={t('form.firstName')} 
-                          value={formData.first_name} 
-                          onChange={handleChange} 
-                          required 
-                        />
-                        <NeonInput 
-                          icon={User} 
-                          name="last_name" 
-                          placeholder={t('form.lastName')} 
-                          value={formData.last_name} 
-                          onChange={handleChange} 
-                          required 
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-cyan-100/70 uppercase tracking-widest mb-3 ml-1">
-                        {t('form.contact')}
-                      </label>
-                      <div className="space-y-4">
-                        <NeonInput 
-                          icon={Phone} 
-                          name="phone" 
-                          type="tel" 
-                          placeholder={t('form.phone')} 
-                          value={formData.phone} 
-                          onChange={handleChange} 
-                          required 
-                        />
-                        <NeonInput 
-                          icon={Mail} 
-                          name="email" 
-                          type="email" 
-                          placeholder={t('form.email')} 
-                          value={formData.email} 
-                          onChange={handleChange} 
-                          required 
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-cyan-100/70 uppercase tracking-widest mb-3 ml-1">
-                      {t('form.details')}
-                    </label>
-                    <NeonInput 
-                      icon={MessageSquare} 
-                      name="enquiry_detail" 
-                      isTextArea 
-                      placeholder={t('form.message')} 
-                      value={formData.enquiry_detail} 
-                      onChange={handleChange} 
-                      required 
-                    />
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4 p-4 rounded-xl bg-[#000814]/50 border border-white/10 hover:border-white/20 transition-colors group">
-                      <div className="relative flex items-center pt-1">
-                        <input 
-                          type="checkbox" 
-                          id="acceptedTerms" 
-                          name="acceptedTerms" 
-                          checked={formData.acceptedTerms} 
-                          onChange={handleChange} 
-                          className="peer h-5 w-5 cursor-pointer appearance-none rounded border-2 border-slate-500 bg-transparent transition-all checked:border-[#B2904D] checked:bg-[#B2904D] hover:border-slate-400" 
-                        />
-                        <div className="pointer-events-none absolute left-1/2 top-[60%] -translate-x-1/2 -translate-y-1/2 text-[#001540] opacity-0 transition-opacity peer-checked:opacity-100">
-                          <CheckCircle2 size={14} strokeWidth={3} />
-                        </div>
-                      </div>
-                      <label htmlFor="acceptedTerms" className="text-sm text-blue-100 leading-relaxed cursor-pointer select-none group-hover:text-white transition-colors">
-                        {t('form.termsAccept')}{' '}
-                        <Link href={`/${lang}/sms-terminos`} target="_blank" className="text-[#B2904D] hover:text-white transition-colors font-bold underline decoration-dotted">
-                          {t('form.termsOf')}
-                        </Link>{' '}
-                        {t('form.andRead')}{' '}
-                        <Link href={`/${lang}/privacidad`} target="_blank" className="text-[#B2904D] hover:text-white transition-colors font-bold underline decoration-dotted">
-                          {t('form.privacyPolicy')}
-                        </Link>.
-                      </label>
-                    </div>
-
-                    <div className="flex items-start gap-4 p-3 rounded-xl bg-[#000814]/30 border border-white/5 hover:border-white/10 transition-colors group">
-                      <div className="relative flex items-center pt-1">
-                        <input 
-                          type="checkbox" 
-                          id="marketingConsent" 
-                          name="marketingConsent" 
-                          checked={formData.marketingConsent} 
-                          onChange={handleChange} 
-                          className="peer h-4 w-4 cursor-pointer appearance-none rounded border-2 border-slate-600 bg-transparent transition-all checked:border-[#B2904D] checked:bg-[#B2904D] hover:border-slate-500" 
-                        />
-                        <div className="pointer-events-none absolute left-1/2 top-[60%] -translate-x-1/2 -translate-y-1/2 text-[#001540] opacity-0 transition-opacity peer-checked:opacity-100">
-                          <CheckCircle2 size={12} strokeWidth={3} />
-                        </div>
-                      </div>
-                      <label htmlFor="marketingConsent" className="text-xs text-blue-200/80 leading-relaxed cursor-pointer select-none group-hover:text-blue-100 transition-colors">
-                        {t('form.marketingConsent')}{' '}
-                        <Link href={`/${lang}/sms-terminos`} target="_blank" className="text-[#B2904D] hover:text-white transition-colors font-bold underline decoration-dotted">
-                          {t('form.smsTerms')}
-                        </Link>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || !formData.acceptedTerms}
-                      className={`
-                        group relative w-full h-14 overflow-hidden rounded-xl font-bold tracking-widest uppercase text-sm transition-all shadow-lg
-                        ${!formData.acceptedTerms 
-                          ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5' 
-                          : 'bg-[#B2904D] text-[#001026] hover:bg-[#cbb06d] cursor-pointer transform hover:-translate-y-1'
-                        }
-                      `}
-                    >
-                      <span className="relative z-10 flex items-center justify-center gap-3">
-                        {isSubmitting ? (
-                          <span className="flex items-center gap-2">
-                            <Zap className="animate-spin text-[#001026]" size={18} /> 
+                  {/* Botón Submit */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !formData.acceptedTerms}
+                    className={`
+                      w-full h-14 rounded-xl font-bold uppercase tracking-widest text-sm shadow-lg transition-all
+                      flex items-center justify-center gap-2
+                      ${!formData.acceptedTerms 
+                        ? 'bg-slate-800 text-slate-500 cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-[#B2904D] to-[#8B6914] text-white hover:shadow-[#B2904D]/25 hover:scale-[1.02]'
+                      }
+                    `}
+                  >
+                     {isSubmitting ? (
+                        <>
+                            <Zap className="animate-spin" size={18} />
                             {t('form.processing')}
-                          </span>
-                        ) : (
-                          <>
-                            <ShieldCheck size={20} className={!formData.acceptedTerms ? "text-slate-500" : "text-[#001026]"} />
+                        </>
+                     ) : (
+                        <>
+                            <ShieldCheck size={18} />
                             {t('form.submit')}
-                          </>
-                        )}
-                      </span>
-                      {!isSubmitting && formData.acceptedTerms && (
-                        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 ease-in-out" />
-                      )}
-                    </button>
-                  </div>
+                        </>
+                     )}
+                  </button>
+                  
+                  {/* Mensajes de Estado */}
+                  {submitStatus === 'success' && (
+                    <div className="p-3 rounded-lg bg-green-500/20 text-green-200 text-center text-sm font-medium border border-green-500/30">
+                        {t('form.successTitle')} {t('form.successMessage')}
+                    </div>
+                  )}
+                  {submitStatus === 'error' && (
+                    <div className="p-3 rounded-lg bg-red-500/20 text-red-200 text-center text-sm font-medium border border-red-500/30">
+                        {t('form.errorTitle')} {t('form.errorMessage')}
+                    </div>
+                  )}
                 </form>
               </div>
             </motion.div>
