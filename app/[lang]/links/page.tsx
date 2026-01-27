@@ -1,4 +1,4 @@
-import LinktreePageContent from '../app/[lang]/links/LinktreePageContent'
+import LinktreePageContent from './LinktreePageContent'
 
 export const metadata = {
   title: 'Manuel Solis Law Firm | Links',
