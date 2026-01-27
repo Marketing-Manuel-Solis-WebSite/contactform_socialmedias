@@ -77,32 +77,32 @@ const texts = {
   },
   buttons: {
     contact: {
-      es: '💙 Empieza hoy tu proceso legal 🤩',
-      en: '💙 Start your legal process today 🤩'
+      es: 'Empieza hoy tu proceso legal',
+      en: 'Start your legal process today'
     },
     call: {
-      es: '📞 Llámanos Ahora',
-      en: '📞 Call Us Now'
+      es: 'Llámanos Ahora',
+      en: 'Call Us Now'
     },
     tiktok: {
-      es: '🚀 Soluciones legales con resultados reales ⭐',
-      en: '🚀 Legal solutions with real results ⭐'
+      es: 'Soluciones legales con resultados reales',
+      en: 'Legal solutions with real results'
     },
     instagram: {
-      es: '⭐ Historias reales que inspiran cada día 💙',
-      en: '⭐ Real stories that inspire every day 💙'
+      es: 'Historias reales que inspiran cada día',
+      en: 'Real stories that inspire every day'
     },
     youtube: {
-      es: '🤩 Comprometidos en brindarte apoyo legal 💪',
-      en: '🤩 Committed to providing legal support 💪'
+      es: 'Comprometidos en brindarte apoyo legal',
+      en: 'Committed to providing legal support'
     },
     facebook: {
-      es: '🙏 Juntos seguimos cambiando vidas ⭐',
-      en: '🙏 Together we keep changing lives ⭐'
+      es: 'Juntos seguimos cambiando vidas',
+      en: 'Together we keep changing lives'
     },
     whatsapp: {
-      es: '💬 Escríbenos por WhatsApp',
-      en: '💬 Message us on WhatsApp'
+      es: 'Escríbenos por WhatsApp',
+      en: 'Message us on WhatsApp'
     }
   },
   footer: {
