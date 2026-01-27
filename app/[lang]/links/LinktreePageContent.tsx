@@ -18,6 +18,25 @@ import {
   Linkedin
 } from 'lucide-react'
 
+// --- CONSTANTES Y CONFIGURACIÓN ---
+const API_URL = '/api/zapier-contact'
+
+// --- TRACKING (Restaurado) ---
+const trackConversionEvents = () => {
+  if (typeof window !== 'undefined') {
+    try {
+      if ((window as any).fbq) (window as any).fbq('track', 'Lead')
+      if ((window as any).ttq) (window as any).ttq.track('CompleteRegistration')
+      if ((window as any).gtag) {
+        (window as any).gtag('event', 'generate_lead', {
+          'event_category': 'Contact',
+          'event_label': 'Form_Submission'
+        })
+      }
+    } catch (e) { console.error("Tracking Error", e) }
+  }
+}
+
 // --- ICONOS PERSONALIZADOS (SVG) ---
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -86,7 +105,7 @@ const texts = {
     successTitle: { es: '¡Enviado!', en: 'Sent!' },
     successMessage: { es: 'Revisaremos su caso de inmediato.', en: 'We will review your case immediately.' },
     errorTitle: { es: 'Error', en: 'Error' },
-    errorMessage: { es: 'Intente de nuevo.', en: 'Please try again.' }
+    errorMessage: { es: 'Hubo un problema. Intente de nuevo más tarde.', en: 'There was an issue. Please try again later.' }
   },
   languageToggle: {
     es: 'English',
@@ -94,7 +113,7 @@ const texts = {
   }
 }
 
-// --- CONTEXT MOCK (Reemplazar con tu contexto real) ---
+// --- CONTEXT MOCK ---
 const useLanguage = () => {
   const [lang, setLang] = useState('es');
   return { language: lang, setLanguage: setLang };
@@ -264,25 +283,59 @@ export default function LinktreePageContent() {
     return value?.[lang] || key
   }
 
+  // --- HANDLER SUBMIT REAL RESTAURADO ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.acceptedTerms || isSubmitting) return
+    
     setIsSubmitting(true)
     setSubmitStatus('idle')
 
     try {
-      // Simulación API
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      setSubmitStatus('success')
-      setFormData({ 
-        first_name: '', last_name: '', phone: '', email: '', enquiry_detail: '', 
-        acceptedTerms: false, marketingConsent: false 
+      // 1. Preparar Payload
+      const payload = {
+        ...formData, 
+        utm_source: 'LINKTREE',
+        utm_medium: 'Social',
+        utm_campaign: 'Linktree',
+        uri: typeof window !== 'undefined' ? window.location.href : '',
+        language: lang
+      }
+
+      // 2. Enviar a la API Configurada
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       })
-      setTimeout(() => { setIsContactModalOpen(false); setSubmitStatus('idle') }, 2500)
+
+      if (response.ok) {
+        // 3. Tracking de Conversión
+        trackConversionEvents()
+        
+        setSubmitStatus('success')
+        setFormData({ 
+          first_name: '', last_name: '', phone: '', email: '', enquiry_detail: '', 
+          acceptedTerms: false, marketingConsent: false 
+        })
+        
+        setTimeout(() => {
+          setIsContactModalOpen(false)
+          setSubmitStatus('idle')
+        }, 2500)
+      } else {
+        setSubmitStatus('error')
+        // Log para depuración si es necesario
+        console.error("API Error:", response.status)
+      }
     } catch (error) {
+      console.error("Submission Error:", error)
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
+      if (submitStatus === 'error') {
+        setTimeout(() => setSubmitStatus('idle'), 4000)
+      }
     }
   }
 
@@ -347,10 +400,10 @@ export default function LinktreePageContent() {
           {/* Logo Container */}
           <div className="relative w-32 h-32 mx-auto mb-6">
             <div className="absolute inset-0 bg-[#B2904D] rounded-full blur-xl opacity-20 animate-pulse"></div>
-            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white/10 to-white/1 p-1 border border-[#B2904D]/30 backdrop-blur-sm overflow-hidden shadow-2xl">
-              <div className="w-full h-full rounded-full bg-[#001540] flex items-center justify-center p-0 relative overflow-hidden">
+            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white/10 to-white/5 p-1 border border-[#B2904D]/30 backdrop-blur-sm overflow-hidden shadow-2xl">
+              <div className="w-full h-full rounded-full bg-[#001540] flex items-center justify-center p-2 relative overflow-hidden">
                 <img
-                  src="/LogoInformacion.png"
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image_12fdfc-Sg1yYJg8XjC6pX1yX6XjC6pX1y.jpg"
                   alt="Manuel Solis"
                   className="w-full h-full object-cover rounded-full"
                 />
