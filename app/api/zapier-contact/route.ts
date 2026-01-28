@@ -24,9 +24,6 @@ export async function POST(request: NextRequest) {
         } = body;
 
         let finalSource = utm_source;
-
-        // Si no hay UTM Source (tráfico directo/orgánico), por defecto usamos 'LINKTREE' o 'SITIO WEB'
-        // Como esta es la página de Linktree, sugiero que el default sea 'LINKTREE' si no viene nada en la URL.
         if (!finalSource || finalSource.trim() === '' || finalSource === 'null' || finalSource === 'undefined') {
             finalSource = 'LINKTREE'; 
         }
