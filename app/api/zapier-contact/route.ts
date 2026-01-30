@@ -23,17 +23,15 @@ export async function POST(request: NextRequest) {
             utm_campaign
         } = body;
 
-        let finalSource = utm_source;
-        if (!finalSource || finalSource.trim() === '' || finalSource === 'null' || finalSource === 'undefined') {
-            finalSource = 'LINKTREE'; 
-        }
-
-        const finalMedium = (utm_medium && utm_medium.trim() !== '') ? utm_medium : 'Social';
-        const finalCampaign = (utm_campaign && utm_campaign.trim() !== '') ? utm_campaign : 'Bio';
+        // Eliminar valores predefinidos, usar lo que llega directamente
+        const finalSource = utm_source; 
+        const finalMedium = utm_medium;
+        const finalCampaign = utm_campaign;
 
         // --- LÓGICA DE DETALLE ---
         let finalDetail = enquiry_detail || '';
-        if (finalSource !== 'SITIO WEB') {
+        // Solo agregamos la fuente si existe y no es 'SITIO WEB'
+        if (finalSource && finalSource.trim() !== '' && finalSource !== 'SITIO WEB') {
              finalDetail = `${finalDetail} | Fuente: ${finalSource}`;
         }
 
