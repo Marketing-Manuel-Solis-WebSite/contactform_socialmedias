@@ -22,10 +22,10 @@ import {
 
 // --- CONSTANTES Y CONFIGURACIÓN ---
 const API_URL = '/api/zapier-contact'
-const YOUTUBE_VIDEO_ID = 'PmU1yOfB9C8'
-const YOUTUBE_LINK = `https://youtu.be/${YOUTUBE_VIDEO_ID}?si=6-TDHSbxtZYkaFMc`
-// Usamos hqdefault para asegurar que la imagen exista y no se vea gris
-const YOUTUBE_THUMBNAIL = `https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/hqdefault.jpg`
+const YOUTUBE_VIDEO_ID = '3Z6BOOCBgas'
+const YOUTUBE_LINK = `https://www.youtube.com/watch?v=${YOUTUBE_VIDEO_ID}&t=4s`
+const YOUTUBE_THUMBNAIL = `https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/maxresdefault.jpg`
+const YOUTUBE_THUMBNAIL_FALLBACK = `https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/hqdefault.jpg`
 
 // --- TRACKING ---
 const trackConversionEvents = () => {
@@ -264,92 +264,71 @@ const LinkButton = ({ icon, text, href, onClick, highlight = false, gradient }: 
 }
 
 // --- NUEVO COMPONENTE: VIDEO ACCORDION ---
-const VideoAccordion = ({ text }: { text: string }) => {
-    const [isOpen, setIsOpen] = useState(false)
+const VideoSection = ({ text }: { text: string }) => {
+    const [thumbError, setThumbError] = useState(false)
 
     return (
         <div className="w-full">
-            {/* Botón que despliega */}
-            <motion.button 
-                onClick={() => setIsOpen(!isOpen)}
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
+            {/* Encabezado del video */}
+            <div
                 className={`
                     relative w-full flex items-center justify-between p-1 rounded-full
-                    transition-all duration-300 group overflow-hidden mb-2
-                    bg-white/5 border border-white/10 hover:border-[#B2904D]/50 hover:shadow-[0_4px_20px_-5px_rgba(178,144,77,0.3)] backdrop-blur-md
-                    ${isOpen ? 'border-[#B2904D]/50 bg-[#B2904D]/10' : ''}
+                    transition-all duration-300 group overflow-hidden mb-3
+                    bg-white/5 border border-[#B2904D]/50 bg-[#B2904D]/10 backdrop-blur-md
                 `}
             >
                 {/* Icono Youtube */}
-                <div className={`
-                    flex items-center justify-center w-12 h-12 rounded-full shrink-0 m-1
-                    bg-white/10 text-white group-hover:bg-white group-hover:text-[#001540] transition-colors duration-300
-                    ${isOpen ? 'bg-white text-[#001540]' : ''}
-                `}>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full shrink-0 m-1 bg-white text-[#001540]">
                     <Youtube size={22} />
                 </div>
 
                 {/* Texto */}
-                <span className={`
-                    flex-1 text-center font-bold text-base px-2 uppercase tracking-wide
-                    text-white group-hover:text-[#001540] transition-colors duration-300
-                    ${isOpen ? 'text-[#B2904D]' : ''}
-                `}>
+                <span className="flex-1 text-center font-bold text-base px-2 uppercase tracking-wide text-[#B2904D]">
                     {text}
                 </span>
 
-                {/* Flecha animada */}
-                <div className="w-12 flex items-center justify-center shrink-0">
-                    <ChevronDown className={`
-                        w-5 h-5 transition-transform duration-300 
-                        ${isOpen ? 'rotate-180 text-[#B2904D]' : 'text-white/30 group-hover:text-[#001540]/50'}
-                    `} />
-                </div>
-            </motion.button>
+                {/* Espacio para mantener simetría */}
+                <div className="w-12 shrink-0" />
+            </div>
 
-            {/* Contenedor del Video (Acordeón) */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                        animate={{ height: "auto", opacity: 1, marginTop: 10 }}
-                        exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                    >
-                         <motion.a 
-                            href={YOUTUBE_LINK}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="relative block w-full aspect-video rounded-2xl overflow-hidden border border-white/10 group shadow-lg hover:shadow-[#B2904D]/20 transition-all duration-300"
+            {/* Video siempre visible */}
+            <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+                <motion.a
+                    href={YOUTUBE_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative block w-full aspect-video rounded-2xl overflow-hidden border border-white/10 group shadow-lg hover:shadow-[#B2904D]/20 transition-all duration-300"
+                >
+                    {/* Background Thumbnail con fallback */}
+                    <img
+                        src={thumbError ? YOUTUBE_THUMBNAIL_FALLBACK : YOUTUBE_THUMBNAIL}
+                        alt="Video reciente - Abogados Manuel Solís"
+                        onError={() => setThumbError(true)}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+
+                    {/* Overlay Oscuro */}
+                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300" />
+
+                    {/* Play Button */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                        <motion.div
+                            initial={{ scale: 0.8 }}
+                            animate={{ scale: 1 }}
+                            className="w-16 h-16 rounded-full bg-[#B2904D]/90 flex items-center justify-center shadow-lg backdrop-blur-sm group-hover:scale-110 transition-transform duration-300"
                         >
-                            {/* Background Thumbnail */}
-                            <div 
-                                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                                style={{ backgroundImage: `url(${YOUTUBE_THUMBNAIL})` }}
-                            />
-                            
-                            {/* Overlay Oscuro */}
-                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
-                            
-                            {/* Play Button */}
-                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-                                <motion.div 
-                                    initial={{ scale: 0.8 }}
-                                    animate={{ scale: 1 }}
-                                    className="w-14 h-14 rounded-full bg-[#B2904D]/90 flex items-center justify-center shadow-lg backdrop-blur-sm group-hover:scale-110 transition-transform duration-300"
-                                >
-                                    <Play className="w-6 h-6 text-[#001026] ml-1" fill="currentColor" />
-                                </motion.div>
-                            </div>
+                            <Play className="w-7 h-7 text-[#001026] ml-1" fill="currentColor" />
+                        </motion.div>
+                    </div>
 
-                            {/* Borde Brillante al Hover */}
-                            <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#B2904D]/50 rounded-2xl transition-colors duration-300 pointer-events-none" />
-                        </motion.a>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    {/* Borde Brillante al Hover */}
+                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#B2904D]/50 rounded-2xl transition-colors duration-300 pointer-events-none" />
+                </motion.a>
+            </motion.div>
         </div>
     )
 }
@@ -554,9 +533,9 @@ export default function LinktreePageContent() {
             />
           </motion.div>
 
-          {/* 3. BOTÓN VIDEO DESPLEGABLE */}
+          {/* 3. VIDEO SIEMPRE VISIBLE */}
           <motion.div variants={itemVariants}>
-             <VideoAccordion text={texts.buttons.video[lang]} />
+             <VideoSection text={texts.buttons.video[lang]} />
           </motion.div>
 
         </motion.div>
