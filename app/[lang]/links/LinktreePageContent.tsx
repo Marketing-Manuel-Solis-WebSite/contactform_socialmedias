@@ -22,8 +22,8 @@ import {
 
 // --- CONSTANTES Y CONFIGURACIÓN ---
 const API_URL = '/api/zapier-contact'
-const YOUTUBE_VIDEO_ID = '3Z6BOOCBgas'
-const YOUTUBE_LINK = `https://www.youtube.com/watch?v=${YOUTUBE_VIDEO_ID}&t=4s`
+const YOUTUBE_VIDEO_ID = 'AWgRoJitmJo'
+const YOUTUBE_LINK = `https://www.youtube.com/watch?v=${YOUTUBE_VIDEO_ID}`
 const YOUTUBE_THUMBNAIL = `https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/maxresdefault.jpg`
 const YOUTUBE_THUMBNAIL_FALLBACK = `https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/hqdefault.jpg`
 
