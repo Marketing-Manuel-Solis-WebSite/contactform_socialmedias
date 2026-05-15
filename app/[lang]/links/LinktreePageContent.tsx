@@ -249,8 +249,13 @@ const LinkButton = ({ icon, text, href, onClick, highlight = false, gradient }: 
   )
 
   if (href) {
+    const isSystemProtocol = /^(tel:|mailto:|sms:|whatsapp:)/i.test(href)
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className="block w-full">
+      <a
+        href={href}
+        {...(isSystemProtocol ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+        className="block w-full"
+      >
         <Content />
       </a>
     )
