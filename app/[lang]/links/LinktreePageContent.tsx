@@ -270,8 +270,6 @@ const LinkButton = ({ icon, text, href, onClick, highlight = false, gradient }: 
 
 // --- NUEVO COMPONENTE: VIDEO ACCORDION ---
 const VideoSection = ({ text }: { text: string }) => {
-    const [thumbError, setThumbError] = useState(false)
-
     return (
         <div className="w-full">
             {/* Encabezado del video */}
@@ -310,9 +308,8 @@ const VideoSection = ({ text }: { text: string }) => {
                 >
                     {/* Background Thumbnail con fallback */}
                     <img
-                        src={thumbError ? YOUTUBE_THUMBNAIL_FALLBACK : YOUTUBE_THUMBNAIL}
+                        src="/Portada.png"
                         alt="Video reciente - Abogados Manuel Solís"
-                        onError={() => setThumbError(true)}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
 
