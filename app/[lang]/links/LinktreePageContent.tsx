@@ -531,7 +531,7 @@ export default function LinktreePageContent() {
             <LinkButton
               icon={<Phone size={22} />}
               text={texts.buttons.call[lang]}
-              href="tel:+18886761238"
+              href="tel:+13464607278"
             />
           </motion.div>
 

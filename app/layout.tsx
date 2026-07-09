@@ -15,7 +15,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Abogados de Inmigración Manuel Solís | Consulta Gratis",
   description:
-    "Abogados de inmigración en Houston, TX. Arregla tu estatus migratorio sin salir del país. Consulta gratuita. Llama ahora al 1-888-676-1238.",
+    "Abogados de inmigración en Houston, TX. Arregla tu estatus migratorio sin salir del país. Consulta gratuita. Llama ahora al +1 (346) 460-7278.",
   keywords: [
     "abogados de inmigración",
     "immigration lawyer Houston",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     siteName: "Manuel Solís Law Firm",
     title: "Abogados de Inmigración Manuel Solís | Consulta Gratis",
     description:
-      "Arregla tu estatus migratorio sin salir del país con los Abogados Manuel Solís. Consulta gratuita. Llama al 1-888-676-1238.",
+      "Arregla tu estatus migratorio sin salir del país con los Abogados Manuel Solís. Consulta gratuita. Llama al +1 (346) 460-7278.",
     images: [
       {
         url: "/LogoInformacion.png",
@@ -101,7 +101,7 @@ export default function RootLayout({
               description:
                 "Abogados de inmigración en Houston, TX. Arregla tu estatus migratorio sin salir del país.",
               url: "https://links.manuelsolis.com",
-              telephone: "+1-888-676-1238",
+              telephone: "+1-346-460-7278",
               image: "https://links.manuelsolis.com/LogoInformacion.png",
               areaServed: {
                 "@type": "Country",
