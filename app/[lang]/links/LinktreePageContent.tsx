@@ -15,7 +15,6 @@ import {
   Facebook,
   Instagram,
   Youtube,
-  Linkedin,
   Play,
   ChevronDown
 } from 'lucide-react'
@@ -24,8 +23,6 @@ import {
 const API_URL = '/api/zapier-contact'
 const YOUTUBE_VIDEO_ID = 'E4scFUVVHJo'
 const YOUTUBE_LINK = `https://www.youtube.com/watch?v=${YOUTUBE_VIDEO_ID}`
-const YOUTUBE_THUMBNAIL = `https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/maxresdefault.jpg`
-const YOUTUBE_THUMBNAIL_FALLBACK = `https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/hqdefault.jpg`
 
 // --- TRACKING ---
 const trackConversionEvents = () => {
@@ -306,10 +303,15 @@ const VideoSection = ({ text }: { text: string }) => {
                     rel="noopener noreferrer"
                     className="relative block w-full aspect-video rounded-2xl overflow-hidden border border-white/10 group shadow-lg hover:shadow-[#B2904D]/20 transition-all duration-300"
                 >
-                    {/* Background Thumbnail con fallback */}
+                    {/* Portada oficial del episodio (1280x720, ~185 KB). Antes era un
+                        PNG de 2 MB, lo más pesado de la página en móvil. */}
                     <img
-                        src="/Portada.png"
-                        alt="Video reciente - Abogados Manuel Solís"
+                        src="/uniendo-familias-ep5.jpg"
+                        alt="Uniendo Familias con Manuel Solís, episodio 5: Jexis Beltrán recupera su libertad gracias a un habeas corpus"
+                        width={1280}
+                        height={720}
+                        loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
 
@@ -436,7 +438,6 @@ export default function LinktreePageContent() {
     instagram: 'https://www.instagram.com/abogadomanuelsolisoficial/',
     youtube: 'https://www.youtube.com/channel/UCWD61mNBq6qJ0BMhj_-a4Vg',
     facebook: 'https://www.facebook.com/AbogadoManuelSolisOficial/',
-    linkedin: 'https://www.linkedin.com/company/manuel-solis-law-firm/',
     whatsapp: 'https://wa.me/17138442700'
   }
 
@@ -561,8 +562,7 @@ export default function LinktreePageContent() {
             { Icon: Instagram, href: socialLinks.instagram },
             { Icon: Facebook, href: socialLinks.facebook },
             { Icon: TikTokIcon, href: socialLinks.tiktok },
-            { Icon: Youtube, href: socialLinks.youtube },
-            { Icon: Linkedin, href: socialLinks.linkedin }
+            { Icon: Youtube, href: socialLinks.youtube }
           ].map((item, i) => (
             <a 
               key={i} 

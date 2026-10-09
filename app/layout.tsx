@@ -13,15 +13,15 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Abogados de Inmigración Manuel Solís | Consulta Gratis",
+  title: "Abogados de Inmigración Manuel Solís | Houston, TX",
   description:
-    "Abogados de inmigración en Houston, TX. Arregla tu estatus migratorio sin salir del país. Consulta gratuita. Llama ahora al +1 (346) 460-7278.",
+    "Abogados de inmigración en Houston, TX. Arregla tu estatus migratorio sin salir del país. Llama ahora al +1 (346) 460-7278.",
   keywords: [
     "abogados de inmigración",
     "immigration lawyer Houston",
     "abogado Manuel Solís",
     "arreglar papeles sin salir",
-    "consulta migratoria gratis",
+    "consulta migratoria",
     "inmigración Estados Unidos",
     "visa",
     "residencia",
@@ -32,7 +32,11 @@ export const metadata: Metadata = {
     icon: "/LogoInformacion.png",
     apple: "/LogoInformacion.png",
   },
-  metadataBase: new URL("https://links.manuelsolis.com"),
+  // Dominio REAL del despliegue. Estaba en links.manuelsolis.com, que no
+  // existe (NXDOMAIN): el canonical apuntaba a un dominio muerto y la imagen
+  // al compartir el enlace salía rota. Si se configura ese subdominio en
+  // Vercel/DNS, cambiarlo aquí y en el JSON-LD de abajo.
+  metadataBase: new URL("https://contactform-socialmedias.vercel.app"),
   alternates: {
     canonical: "/",
     languages: {
@@ -45,9 +49,9 @@ export const metadata: Metadata = {
     locale: "es_US",
     alternateLocale: "en_US",
     siteName: "Manuel Solís Law Firm",
-    title: "Abogados de Inmigración Manuel Solís | Consulta Gratis",
+    title: "Abogados de Inmigración Manuel Solís | Houston, TX",
     description:
-      "Arregla tu estatus migratorio sin salir del país con los Abogados Manuel Solís. Consulta gratuita. Llama al +1 (346) 460-7278.",
+      "Arregla tu estatus migratorio sin salir del país con los Abogados Manuel Solís. Llama al +1 (346) 460-7278.",
     images: [
       {
         url: "/LogoInformacion.png",
@@ -61,7 +65,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Abogados de Inmigración Manuel Solís",
     description:
-      "Arregla tu estatus migratorio sin salir del país. Consulta gratuita.",
+      "Arregla tu estatus migratorio sin salir del país con los Abogados Manuel Solís.",
     images: ["/LogoInformacion.png"],
   },
   robots: {
@@ -100,21 +104,19 @@ export default function RootLayout({
               name: "Manuel Solís Law Firm",
               description:
                 "Abogados de inmigración en Houston, TX. Arregla tu estatus migratorio sin salir del país.",
-              url: "https://links.manuelsolis.com",
+              url: "https://contactform-socialmedias.vercel.app",
               telephone: "+1-346-460-7278",
-              image: "https://links.manuelsolis.com/LogoInformacion.png",
+              image: "https://contactform-socialmedias.vercel.app/LogoInformacion.png",
               areaServed: {
                 "@type": "Country",
                 name: "US",
               },
               serviceType: "Immigration Law",
-              priceRange: "Consulta Gratis",
               sameAs: [
                 "https://www.facebook.com/AbogadoManuelSolisOficial/",
                 "https://www.instagram.com/abogadomanuelsolisoficial/",
                 "https://www.youtube.com/channel/UCWD61mNBq6qJ0BMhj_-a4Vg",
                 "https://www.tiktok.com/@abogadomanuelsolisoficial",
-                "https://www.linkedin.com/company/manuel-solis-law-firm/",
               ],
             }),
           }}
