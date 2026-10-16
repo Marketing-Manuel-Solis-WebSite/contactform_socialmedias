@@ -1,83 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { deliverLead, normalizeLead, type LinktreeFormBody, type RequestContext } from '../../lib/leadDelivery';
 
-const EXTERNAL_API_URL = 'https://bos.manuelsolis.com/lead/manuelsolis';
+/** Peor caso de entrega: BoSpot 2x10s y luego BOS 20s (ver leadDelivery.ts). */
+export const maxDuration = 60;
 
+/**
+ * Recibe el formulario de la linktree y lo entrega a BoSpot y/o BOS según
+ * LEAD_DESTINATION (ver app/lib/leadDelivery.ts). El nombre de la ruta es
+ * histórico: ya no pasa por Zapier.
+ *
+ * Los logs no llevan datos personales: solo el event_id y el resultado.
+ */
 export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json();
-        
-        console.log("📥 [BACKEND] Body recibido del Frontend:", body);
+  let body: LinktreeFormBody;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ success: false, error: 'Invalid JSON' }, { status: 400 });
+  }
 
-        const { 
-            first_name, 
-            last_name, 
-            email, 
-            phone, 
-            enquiry_detail, 
-            acceptedTerms,
-            marketingConsent,
-            uri,
-            language,
-            utm_source,
-            utm_medium,
-            utm_campaign
-        } = body;
+  const ctx: RequestContext = {
+    ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null,
+    userAgent: request.headers.get('user-agent')?.slice(0, 500) || null,
+    country: request.headers.get('x-vercel-ip-country') || null,
+    fbp: request.cookies.get('_fbp')?.value || null,
+    fbc: request.cookies.get('_fbc')?.value || null,
+    now: new Date(),
+    newId: () => crypto.randomUUID(),
+  };
 
-        // Eliminar valores predefinidos, usar lo que llega directamente
-        const finalSource = utm_source; 
-        const finalMedium = utm_medium;
-        const finalCampaign = utm_campaign;
+  const lead = normalizeLead(body, ctx);
+  // Lo mínimo para poder contactar. El navegador ya exige el resto; un campo
+  // con solo espacios no debe tirar un lead que antes llegaba.
+  if ((!lead.phone && !lead.email) || !lead.acceptedTerms) {
+    return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
+  }
 
-        // --- LÓGICA DE DETALLE ---
-        let finalDetail = enquiry_detail || '';
-        // Solo agregamos la fuente si existe y no es 'SITIO WEB'
-        if (finalSource && finalSource.trim() !== '' && finalSource !== 'SITIO WEB') {
-             finalDetail = `${finalDetail} | Fuente: ${finalSource}`;
-        }
-
-        // --- PAYLOAD PARA BOS.MANUELSOLIS.COM ---
-        const payload = {
-            name: first_name,       
-            first_name: first_name,
-            last_name: last_name,
-            phone: phone,
-            email: email,
-            enquiry_detail: finalDetail, 
-            
-            acceptedTerms: acceptedTerms ? 1 : 0,      
-            marketingConsent: marketingConsent ? 1 : 0,
-            
-            uri: uri, 
-            
-            language_preference: language,
-            
-            source: finalSource,       
-            utm_source: finalSource,   
-            medium: finalMedium,
-            utm_medium: finalMedium,
-            campaign: finalCampaign
-        };
-
-        console.log("🚀 [BACKEND] Enviando a BOS:", payload);
-
-        const response = await fetch(EXTERNAL_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload),
-        });
-
-        if (response.ok) {
-            return NextResponse.json({ success: true });
-        } else {
-            const errorText = await response.text();
-            console.error("❌ ERROR API BOS:", errorText);
-            return NextResponse.json({ success: false, error: 'External API error' }, { status: response.status });
-        }
-    } catch (error) {
-        console.error('❌ ERROR SERVIDOR:', error);
-        return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
+  try {
+    const result = await deliverLead(lead, ctx, process.env);
+    const summary = {
+      event_id: lead.event_id,
+      mode: result.mode,
+      bospot: result.bospot?.status ?? null,
+      bos: result.bos?.status ?? null,
+      fellBackToBos: result.fellBackToBos,
+      bospotDetail: result.bospot?.detail ?? null,
+      bosDetail: result.bos?.detail ?? null,
+    };
+    if (!result.ok) {
+      console.error('❌ Lead no entregado', summary);
+      return NextResponse.json({ success: false, error: 'Lead delivery failed' }, { status: 502 });
     }
+    if (result.fellBackToBos || (result.bospot && !result.bospot.ok)) {
+      console.error('⚠️ BoSpot no aceptó el lead', summary);
+    } else {
+      console.log('✅ Lead entregado', summary);
+    }
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('❌ ERROR SERVIDOR', lead.event_id, error);
+    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
+  }
 }

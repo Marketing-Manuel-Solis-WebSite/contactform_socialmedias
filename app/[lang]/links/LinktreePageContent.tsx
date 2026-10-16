@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
 import { 
   Phone, 
@@ -354,8 +354,15 @@ export default function LinktreePageContent() {
   const [utmParams, setUtmParams] = useState({
     source: '',
     medium: '',
-    campaign: ''
+    campaign: '',
+    content: '',
+    term: '',
+    gclid: '',
+    fbclid: ''
   })
+  // Un id por envío: si la persona reintenta tras un error, se reusa y BoSpot
+  // no crea un lead duplicado. Se renueva cuando el envío sale bien.
+  const eventIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -363,7 +370,11 @@ export default function LinktreePageContent() {
       setUtmParams({
         source: params.get('utm_source') || '',
         medium: params.get('utm_medium') || '',
-        campaign: params.get('utm_campaign') || ''
+        campaign: params.get('utm_campaign') || '',
+        content: params.get('utm_content') || '',
+        term: params.get('utm_term') || '',
+        gclid: params.get('gclid') || '',
+        fbclid: params.get('fbclid') || ''
       })
     }
   }, [])
@@ -383,11 +394,24 @@ export default function LinktreePageContent() {
     setSubmitStatus('idle')
 
     try {
+      if (!eventIdRef.current) {
+        eventIdRef.current = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`
+      }
+      // Las UTMs van tal cual (vacías si el enlace no las trae): las etiquetas
+      // LINKTREE/Social/Linktree para BOS las pone el servidor.
       const payload = {
         ...formData, 
-        utm_source: utmParams.source || 'LINKTREE', 
-        utm_medium: utmParams.medium || 'Social',
-        utm_campaign: utmParams.campaign || 'Linktree',
+        utm_source: utmParams.source,
+        utm_medium: utmParams.medium,
+        utm_campaign: utmParams.campaign,
+        utm_content: utmParams.content,
+        utm_term: utmParams.term,
+        gclid: utmParams.gclid,
+        fbclid: utmParams.fbclid,
+        event_id: eventIdRef.current,
+        referrer: typeof document !== 'undefined' ? document.referrer : '',
         uri: typeof window !== 'undefined' ? window.location.href : '',
         language: lang
       }
@@ -399,6 +423,7 @@ export default function LinktreePageContent() {
       })
 
       if (response.ok) {
+        eventIdRef.current = null
         trackConversionEvents()
         setSubmitStatus('success')
         setFormData({ 
@@ -426,6 +451,8 @@ export default function LinktreePageContent() {
 
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target
+    // Datos distintos = envío distinto: BoSpot no debe tomarlo por duplicado.
+    if (type !== 'checkbox') eventIdRef.current = null
     setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
   }
 
